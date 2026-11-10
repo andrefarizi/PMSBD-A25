@@ -17,6 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // ============================================================
+            // [MSBD - MODUL NOTION] ROLE USER UNTUK MULTI-USER MANAGEMENT
+            // Nilai role: 'admin' atau 'kasir'
+            // ============================================================
+            $table->string('role')->default('kasir');
             $table->rememberToken();
             $table->timestamps();
         });

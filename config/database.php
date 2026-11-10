@@ -64,6 +64,8 @@ return [
             ]) : [],
         ],
 
+        // Modul 6 (User Management) - Bagian 6.2: paste koneksi mysql_kasir & mysql_admin di sini
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
