@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Modul 6 (User Management) - Bagian 6.4: middleware DBDynamicConnection sudah terdaftar di sini, tidak perlu diubah
         $middleware->web(append: [
             \App\Http\Middleware\DBDynamicConnection::class,
         ]);

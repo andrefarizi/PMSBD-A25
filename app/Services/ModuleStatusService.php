@@ -13,11 +13,12 @@ class ModuleStatusService
     public static function check(): array
     {
         return [
-            1 => self::checkTransaction(),
-            2 => self::checkProcedure(),
+            // Penomoran mengikuti urutan modul di Notion.
+            1 => self::checkProcedure(),
+            2 => self::checkFunction(),
             3 => self::checkView(),
-            4 => self::checkFunction(),
-            5 => self::checkTrigger(),
+            4 => self::checkTrigger(),
+            5 => self::checkTransaction(),
             6 => self::checkUserManagement(),
         ];
     }
@@ -73,7 +74,7 @@ class ModuleStatusService
             $message = 'DB::commit() atau DB::rollBack() belum ada.';
         }
 
-        return self::result('1. TRANSAKSI (COMMIT / ROLLBACK)', $active, $message);
+        return self::result('5. TRANSAKSI (COMMIT / ROLLBACK)', $active, $message);
     }
 
     private static function checkProcedure(): array
@@ -89,14 +90,14 @@ class ModuleStatusService
         $hasCall = str_contains($code, 'log_pembatalan_procedure');
 
         if (!$hasProcedure) {
-            return self::result('2. STORED PROCEDURE', false, 'Procedure log_pembatalan_procedure belum dibuat.');
+            return self::result('1. STORED PROCEDURE', false, 'Procedure log_pembatalan_procedure belum dibuat.');
         }
 
         if (!$hasCall) {
-            return self::result('2. STORED PROCEDURE', false, 'Procedure belum dipanggil di cancelTransaction().');
+            return self::result('1. STORED PROCEDURE', false, 'Procedure belum dipanggil di cancelTransaction().');
         }
 
-        return self::result('2. STORED PROCEDURE', true, 'Procedure aktif.');
+        return self::result('1. STORED PROCEDURE', true, 'Procedure aktif.');
     }
 
     private static function checkView(): array
@@ -133,18 +134,18 @@ class ModuleStatusService
         } catch (\Throwable $e) {}
 
         if (!$hasDbFunction) {
-            return self::result('4. DATABASE FUNCTION', false, 'Function calculate_today_revenue() belum dibuat.');
+            return self::result('2. DATABASE FUNCTION', false, 'Function calculate_today_revenue() belum dibuat.');
         }
 
         if (!method_exists(Transaction::class, 'getTodayRevenue')) {
-            return self::result('4. DATABASE FUNCTION', false, 'Method getTodayRevenue() belum ada di Model Transaction.');
+            return self::result('2. DATABASE FUNCTION', false, 'Method getTodayRevenue() belum ada di Model Transaction.');
         }
 
         try {
             DB::selectOne('SELECT calculate_today_revenue() AS total');
-            return self::result('4. DATABASE FUNCTION', true, 'Function aktif.');
+            return self::result('2. DATABASE FUNCTION', true, 'Function aktif.');
         } catch (\Throwable $err) {
-            return self::result('4. DATABASE FUNCTION', false, 'Function error (' . $err->getMessage() . ').');
+            return self::result('2. DATABASE FUNCTION', false, 'Function error (' . $err->getMessage() . ').');
         }
     }
 
@@ -160,7 +161,7 @@ class ModuleStatusService
             }
         } catch (\Throwable $e) {}
 
-        return self::result('5. DATABASE TRIGGER', $active, $message);
+        return self::result('4. DATABASE TRIGGER', $active, $message);
     }
 
     private static function checkUserManagement(): array

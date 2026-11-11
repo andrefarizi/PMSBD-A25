@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
+// Modul 6 (User Management) - Bagian 6.3: middleware ini sudah tersedia, cukup dipahami (tidak perlu diubah)
 class DBDynamicConnection
 {
     public function handle(Request $request, Closure $next): Response

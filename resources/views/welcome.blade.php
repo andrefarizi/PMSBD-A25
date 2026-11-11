@@ -8,49 +8,7 @@
 
         <div class="neu-card p-6 sm:p-7">
             <div class="space-y-5">
-                @include('partials.module-status', ['label' => '1. Transaksi (Commit / Rollback)', 'title' => 'Buat Pesanan', 'status' => $moduleStatus[1]])
-
-                <form action="{{ route('transactions.store') }}" method="POST" class="space-y-3.5">
-                    @csrf
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Pelanggan</label>
-                        <select name="customer_id" required class="w-full text-xs font-medium text-slate-700 neu-input-inset rounded-xl p-3 outline-none border-0">
-                            @foreach($customers as $c)
-                                <option value="{{ $c->id }}">{{ $c->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="col-span-2">
-                            <label class="block text-xs font-bold text-slate-600 mb-1.5">Produk</label>
-                            <select name="product_id" required class="w-full text-xs font-medium text-slate-700 neu-input-inset rounded-xl p-3 outline-none border-0">
-                                @foreach($products as $p)
-                                    <option value="{{ $p->id }}">{{ $p->nama }} (Rp {{ number_format($p->harga, 0, ',', '.') }})</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1.5">Jumlah</label>
-                            <input type="number" name="qty" value="1" min="1" max="10" required class="w-full text-xs font-semibold text-slate-700 neu-input-inset rounded-xl p-3 outline-none border-0 text-center">
-                        </div>
-                    </div>
-                    <label class="neu-inset p-3.5 rounded-xl flex items-start space-x-2.5 cursor-pointer">
-                        <input type="checkbox" name="simulate_rollback" value="1" class="rounded border-slate-300 text-blue-500 focus:ring-0 h-4 w-4 mt-0.5 neu-pill">
-                        <div>
-                            <span class="text-xs font-bold text-slate-700 block">Uji Rollback</span>
-                            <span class="text-[11px] text-slate-500 block mt-0.5">Paksa error agar data tidak tersimpan.</span>
-                        </div>
-                    </label>
-                    <button type="submit" class="w-full neu-btn-primary text-white text-xs font-bold py-3.5 px-4 rounded-xl">
-                        Proses Pesanan
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div class="neu-card p-6 sm:p-7">
-            <div class="space-y-5">
-                @include('partials.module-status', ['label' => '2. Stored Procedure', 'title' => 'Batalkan Pesanan', 'status' => $moduleStatus[2]])
+                @include('partials.module-status', ['label' => '1. Stored Procedure', 'title' => 'Batalkan Pesanan', 'status' => $moduleStatus[1]])
 
                 @if($activeTransactions->count() > 0)
                     <form id="cancelForm" method="POST" onsubmit="this.action='/transactions/' + document.getElementById('cancel_id').value + '/cancel';" class="space-y-3.5">
@@ -87,6 +45,30 @@
                             <p class="neu-inset p-3 text-center text-[11px] text-slate-400 italic">Belum ada data.</p>
                         @endforelse
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="neu-card p-6 sm:p-7">
+            <div class="space-y-5">
+                @include('partials.module-status', ['label' => '2. Database Function', 'title' => 'Omzet Penjualan', 'status' => $moduleStatus[2]])
+
+                <div class="grid grid-cols-2 gap-4">
+                    @foreach([
+                        ['Hari Ini',   'calculate_today_revenue()', $stats['todayRevenue'], $stats['todayTransactions']],
+                        ['Bulan Ini',  'calculate_month_revenue()', $stats['monthRevenue'], $stats['monthTransactions']],
+                        ['Total',      'calculate_total_revenue()', $stats['totalRevenue'], null],
+                        ['Kasir Ini',  'calculate_user_revenue()',  $stats['userRevenue'],  null],
+                    ] as [$name, $fn, $value, $count])
+                        <div class="neu-card p-4">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{{ $name }}</span>
+                            <span class="text-[10px] text-blue-500 font-mono">{{ $fn }}</span>
+                            <span class="text-lg font-extrabold text-slate-800 block mt-2">Rp {{ number_format($value, 0, ',', '.') }}</span>
+                            @if(!is_null($count))
+                                <span class="text-[10px] text-slate-500">{{ $count }} pesanan</span>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -130,35 +112,7 @@
 
         <div class="neu-card p-6 sm:p-7">
             <div class="space-y-5">
-                @include('partials.module-status', ['label' => '4. Database Function', 'title' => 'Omzet Penjualan', 'status' => $moduleStatus[4]])
-
-                <div class="grid grid-cols-2 gap-4">
-                    @foreach([
-                        ['Hari Ini',   'calculate_today_revenue()', $stats['todayRevenue'], $stats['todayTransactions']],
-                        ['Bulan Ini',  'calculate_month_revenue()', $stats['monthRevenue'], $stats['monthTransactions']],
-                        ['Total',      'calculate_total_revenue()', $stats['totalRevenue'], null],
-                        ['Kasir Ini',  'calculate_user_revenue()',  $stats['userRevenue'],  null],
-                    ] as [$name, $fn, $value, $count])
-                        <div class="neu-card p-4">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{{ $name }}</span>
-                            <span class="text-[10px] text-blue-500 font-mono">{{ $fn }}</span>
-                            <span class="text-lg font-extrabold text-slate-800 block mt-2">Rp {{ number_format($value, 0, ',', '.') }}</span>
-                            @if(!is_null($count))
-                                <span class="text-[10px] text-slate-500">{{ $count }} pesanan</span>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-        <div class="neu-card p-6 sm:p-7">
-            <div class="space-y-5">
-                @include('partials.module-status', ['label' => '5. Database Trigger', 'title' => 'Log Aktivitas', 'status' => $moduleStatus[5]])
+                @include('partials.module-status', ['label' => '4. Database Trigger', 'title' => 'Log Aktivitas', 'status' => $moduleStatus[4]])
 
                 <div class="space-y-2.5 max-h-52 overflow-y-auto pr-1">
                     @forelse($triggerLogs as $tl)
@@ -173,6 +127,52 @@
                         <p class="neu-inset p-4 text-center text-xs text-slate-400">Belum ada data.</p>
                     @endforelse
                 </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <div class="neu-card p-6 sm:p-7">
+            <div class="space-y-5">
+                @include('partials.module-status', ['label' => '5. Transaksi (Commit / Rollback)', 'title' => 'Buat Pesanan', 'status' => $moduleStatus[5]])
+
+                <form action="{{ route('transactions.store') }}" method="POST" class="space-y-3.5">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5">Pelanggan</label>
+                        <select name="customer_id" required class="w-full text-xs font-medium text-slate-700 neu-input-inset rounded-xl p-3 outline-none border-0">
+                            @foreach($customers as $c)
+                                <option value="{{ $c->id }}">{{ $c->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="col-span-2">
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">Produk</label>
+                            <select name="product_id" required class="w-full text-xs font-medium text-slate-700 neu-input-inset rounded-xl p-3 outline-none border-0">
+                                @foreach($products as $p)
+                                    <option value="{{ $p->id }}">{{ $p->nama }} (Rp {{ number_format($p->harga, 0, ',', '.') }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5">Jumlah</label>
+                            <input type="number" name="qty" value="1" min="1" max="10" required class="w-full text-xs font-semibold text-slate-700 neu-input-inset rounded-xl p-3 outline-none border-0 text-center">
+                        </div>
+                    </div>
+                    <label class="neu-inset p-3.5 rounded-xl flex items-start space-x-2.5 cursor-pointer">
+                        <input type="checkbox" name="simulate_rollback" value="1" class="rounded border-slate-300 text-blue-500 focus:ring-0 h-4 w-4 mt-0.5 neu-pill">
+                        <div>
+                            <span class="text-xs font-bold text-slate-700 block">Uji Rollback</span>
+                            <span class="text-[11px] text-slate-500 block mt-0.5">Paksa error agar data tidak tersimpan.</span>
+                        </div>
+                    </label>
+                    <button type="submit" class="w-full neu-btn-primary text-white text-xs font-bold py-3.5 px-4 rounded-xl">
+                        Proses Pesanan
+                    </button>
+                </form>
             </div>
         </div>
 
