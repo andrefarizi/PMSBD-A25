@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -34,14 +35,23 @@ class AuthController extends Controller
         try {
             $row = DB::selectOne($sql);
         } catch (\Throwable $e) {
-            $row = null;
+            return back()
+                ->with('error', 'Query Error: ' . $e->getMessage() . ' Query: ' . $sql)
+                ->withInput($request->only('username'));
         }
 
         // VERSI AMAN: parameter binding (?), input tidak bisa mengubah query
-        // $row = DB::selectOne(
-        //     "SELECT * FROM users WHERE name = ? AND password = ? LIMIT 1",
-        //     [$loginInput, $password]
-        // );
+        // try {
+        //     $row = DB::selectOne(
+        //         "SELECT * FROM users WHERE name = ? AND password = ? LIMIT 1",
+        //         [$loginInput, $password]
+        //     );
+        // } catch (\Throwable $e) {
+        //     Log::error($e->getMessage());
+        //     return back()
+        //         ->with('error', 'Terjadi kesalahan, silakan coba lagi.')
+        //         ->withInput($request->only('username'));
+        // }
 
         if ($row) {
             $user = User::find($row->id);
