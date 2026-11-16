@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-// Tidak ada perubahan yang diperlukan di file ini.
 class AuthController extends Controller
 {
     public function showLoginForm()
@@ -27,13 +27,24 @@ class AuthController extends Controller
         ]);
 
         $loginInput = trim($request->input('username'));
+        $password   = $request->input('password');
 
-        $user = User::whereRaw('LOWER(name) = ?', [strtolower($loginInput)])
-            ->orWhereRaw('LOWER(role) = ?', [strtolower($loginInput)])
-            ->orWhere('email', $loginInput)
-            ->first();
+        // VERSI BERBAHAYA: input digabung langsung ke query (rentan SQL Injection)
+        $sql = "SELECT * FROM users WHERE name = '{$loginInput}' AND password = '{$password}' LIMIT 1";
+        try {
+            $row = DB::selectOne($sql);
+        } catch (\Throwable $e) {
+            $row = null;
+        }
 
-        if ($user && Hash::check($request->input('password'), $user->password)) {
+        // VERSI AMAN: parameter binding (?), input tidak bisa mengubah query
+        // $row = DB::selectOne(
+        //     "SELECT * FROM users WHERE name = ? AND password = ? LIMIT 1",
+        //     [$loginInput, $password]
+        // );
+
+        if ($row) {
+            $user = User::find($row->id);
             Auth::login($user);
             $request->session()->regenerate();
             return $this->redirectByRole($user)

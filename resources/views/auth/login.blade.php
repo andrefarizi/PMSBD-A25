@@ -38,13 +38,13 @@
                     @csrf
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Username Pengguna</label>
-                        <input type="text" name="username" id="input_username" value="{{ old('username', 'Kasir') }}" required autofocus
+                        <input type="text" name="username" id="input_username" value="{{ old('username') }}" required autofocus
                             placeholder="Masukkan username (contoh: Kasir atau Admin)"
                             class="w-full text-xs font-medium text-slate-700 neu-input-inset rounded-xl p-3.5 outline-none border-0">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1.5">Password</label>
-                        <input type="password" name="password" id="input_password" value="kasir" required
+                        <input type="password" name="password" id="input_password" required
                             placeholder="Masukkan password"
                             class="w-full text-xs font-medium text-slate-700 neu-input-inset rounded-xl p-3.5 outline-none border-0">
                     </div>
@@ -53,26 +53,6 @@
                         <span>Masuk ke Sistem</span>
                     </button>
                 </form>
-
-                <!-- Box Akses Cepat (Tanpa Judul Header & Tanpa Icon) -->
-                <div class="neu-inset p-3.5 rounded-xl">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <a href="{{ route('user.switch', 'kasir') }}" class="neu-pill p-3 rounded-xl hover:bg-blue-50/60 transition flex items-center justify-between group">
-                            <div class="text-left">
-                                <span class="font-bold text-xs text-slate-800 block group-hover:text-blue-600">Kasir Sales</span>
-                                <span class="text-[10px] text-slate-500 font-mono">user: <strong>Kasir</strong> | pass: kasir</span>
-                            </div>
-                            <span class="neu-pill px-2 py-0.5 rounded text-[10px] font-bold text-blue-600 uppercase">Kasir</span>
-                        </a>
-                        <a href="{{ route('user.switch', 'admin') }}" class="neu-pill p-3 rounded-xl hover:bg-indigo-50/60 transition flex items-center justify-between group">
-                            <div class="text-left">
-                                <span class="font-bold text-xs text-slate-800 block group-hover:text-indigo-600">Admin Toko</span>
-                                <span class="text-[10px] text-slate-500 font-mono">user: <strong>Admin</strong> | pass: admin</span>
-                            </div>
-                            <span class="neu-pill px-2 py-0.5 rounded text-[10px] font-bold text-indigo-600 uppercase">Admin</span>
-                        </a>
-                    </div>
-                </div>
 
                 <!-- Navigasi Kembali -->
                 <div class="pt-1 text-center">

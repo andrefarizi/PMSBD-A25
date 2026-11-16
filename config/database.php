@@ -65,6 +65,43 @@ return [
         ],
 
         // Modul 6 (User Management) - Bagian 6.2: paste koneksi mysql_kasir & mysql_admin di sini
+        'mysql_kasir' =>[
+    'driver' =>'mysql',
+    'host' =>env('DB_HOST', '127.0.0.1'),
+    'port' =>env('DB_PORT', '3306'),
+    'database' =>env('DB_DATABASE', 'msbd-lab'),
+    'username' =>env('DB_USERNAME_KASIR', 'kasir'),
+    'password' =>env('DB_PASSWORD_KASIR', 'kasir'),
+    'unix_socket' =>env('DB_SOCKET', ''),
+    'charset' =>'utf8mb4',
+    'collation' =>'utf8mb4_unicode_ci',
+    'prefix' =>'',
+    'prefix_indexes' =>true,
+    'strict' =>true,
+    'engine' =>null,
+    'options' =>extension_loaded('pdo_mysql') ?array_filter([
+        Mysql::ATTR_SSL_CA =>env('MYSQL_ATTR_SSL_CA'),
+    ]) :[],
+],
+
+'mysql_admin' =>[
+    'driver' =>'mysql',
+    'host' =>env('DB_HOST', '127.0.0.1'),
+    'port' =>env('DB_PORT', '3306'),
+    'database' =>env('DB_DATABASE', 'msbd-lab'),
+    'username' =>env('DB_USERNAME_ADMIN', 'admin'),
+    'password' =>env('DB_PASSWORD_ADMIN', 'admin'),
+    'unix_socket' =>env('DB_SOCKET', ''),
+    'charset' =>'utf8mb4',
+    'collation' =>'utf8mb4_unicode_ci',
+    'prefix' =>'',
+    'prefix_indexes' =>true,
+    'strict' =>true,
+    'engine' =>null,
+    'options' =>extension_loaded('pdo_mysql') ?array_filter([
+        Mysql::ATTR_SSL_CA =>env('MYSQL_ATTR_SSL_CA'),
+    ]) :[],
+],
 
         'mariadb' => [
             'driver' => 'mariadb',

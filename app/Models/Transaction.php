@@ -40,4 +40,76 @@ class Transaction extends Model
     }
 
     // Modul 2 (Stored Function) - Bagian 2.5: paste method Stored Function dari Notion di sini
+    /**
+ * Pendapatan hari ini.
+ */
+public static function getTodayRevenue()
+{
+    $result =DB::selectOne(
+        'SELECT calculate_today_revenue() AS total'
+    );
+
+    return $result ?(float) $result->total :0.00;
+}
+
+/**
+ * Pendapatan bulan ini.
+ */
+public static function getMonthRevenue()
+{
+    $result =DB::selectOne(
+        'SELECT calculate_month_revenue() AS total'
+    );
+
+    return $result ?(float) $result->total :0.00;
+}
+
+/**
+ * Total seluruh omzet.
+ */
+public static function getTotalRevenue()
+{
+    $result =DB::selectOne(
+        'SELECT calculate_total_revenue() AS total'
+    );
+
+    return $result ?(float) $result->total :0.00;
+}
+
+/**
+ * Pendapatan kasir tertentu.
+ */
+public static function getUserRevenue($userId)
+{
+    $result =DB::selectOne(
+        'SELECT calculate_user_revenue(?)AS total',
+        [$userId]
+    );
+
+    return $result ?(float) $result->total :0.00;
+}
+
+/**
+ * Jumlah transaksi hari ini.
+ */
+public static function getTodayTransactionsCount()
+{
+    $result =DB::selectOne(
+        'SELECT count_today_transactions() AS total'
+    );
+
+    return $result ?(int) $result->total :0;
+}
+
+/**
+ * Jumlah transaksi bulan ini.
+ */
+public static function getMonthTransactionsCount()
+{
+    $result =DB::selectOne(
+        'SELECT count_month_transactions() AS total'
+    );
+
+    return $result ?(int) $result->total :0;
+}
 }
